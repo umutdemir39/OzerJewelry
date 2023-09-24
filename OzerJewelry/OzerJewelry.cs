@@ -157,6 +157,89 @@ namespace OzerJewelry
         decimal euroalis = 0;
         string eurosatisfirst = "";
         decimal eurosatis = 0;
+
+        public static async Task haremaltingetir(decimal ALTINalis, decimal ALTINsatis)
+        {
+            var client = new SocketIO("wss://www.haremaltin.com:2088");
+
+
+            string USDTRYalis = "0.0";
+            string USDTRYsatis = "0.0";
+
+            string EURTRYalis = "0.0";
+            string EURTRYsatis = "0.0";
+
+            //string ALTINalis = "0.0";
+            //string ALTINsatis = "0.0";
+
+
+
+
+            client.On("price_changed", response =>
+            {
+
+                string gelendata = response.ToString();
+
+
+                var objResponse1 = JsonConvert.DeserializeObject<List<Root>>(gelendata);
+                var a = objResponse1[0];
+
+
+                if (a.data.USDTRY != null)
+                {
+                    USDTRYalis = a.data.USDTRY.alis;
+                    USDTRYsatis = a.data.USDTRY.satis;
+
+
+                    INIKaydet ini = new INIKaydet(AppDomain.CurrentDomain.BaseDirectory + @"Ayarlar.ini");
+                    ini.Yaz("HAREMALTIN_USDTRY", "USDTRY Alis Degeri", a.data.USDTRY.alis);
+                    ini.Yaz("HAREMALTIN_USDTRY", "USDTRY Satis Degeri", a.data.USDTRY.satis);
+                }
+                if (a.data.EURTRY != null)
+                {
+                    EURTRYalis = a.data.EURTRY.alis;
+                    EURTRYsatis = a.data.EURTRY.satis;
+
+                    INIKaydet ini = new INIKaydet(AppDomain.CurrentDomain.BaseDirectory + @"Ayarlar.ini");
+                    ini.Yaz("HAREMALTIN_EURTRY", "EURTRY Alis Degeri", a.data.EURTRY.alis);
+                    ini.Yaz("HAREMALTIN_EURTRY", "EURTRY Satis Degeri", a.data.EURTRY.satis);
+                }
+                if (a.data.ALTIN != null)
+                {
+                    ALTINalis = Convert.ToDecimal(a.data.ALTIN.alis);
+                    ALTINsatis = Convert.ToDecimal(a.data.ALTIN.satis);
+
+                    INIKaydet ini = new INIKaydet(AppDomain.CurrentDomain.BaseDirectory + @"Ayarlar.ini");
+                    ini.Yaz("HAREMALTIN_HASALTIN", "HASALTIN Alis Degeri", a.data.ALTIN.alis);
+                    ini.Yaz("HAREMALTIN_HASALTIN", "HASALTIN Satis Degeri", a.data.ALTIN.satis);
+                }
+                //Console.Clear();
+                //Console.WriteLine("USDTRY");
+                //Console.WriteLine("ALIŞ  : " + USDTRYalis);
+                //Console.WriteLine("SATIŞ : " + USDTRYsatis);
+
+                //Console.WriteLine("EURTRY");
+                //Console.WriteLine("ALIŞ  : " + EURTRYalis);
+                //Console.WriteLine("SATIŞ : " + EURTRYsatis);
+
+                //Console.WriteLine("ALTIN");
+                //Console.WriteLine("ALIŞ  : " + ALTINalis);
+                //Console.WriteLine("SATIŞ : " + ALTINsatis);
+
+            });
+
+            client.OnConnected += async (sender, e) =>
+            {
+                // Emit a string
+                await client.EmitAsync("");
+                Console.WriteLine("Connected");
+
+
+                // Emit a string and an object
+            };
+            await client.ConnectAsync();
+        }
+
         public async void DataGetir()
         {
 
@@ -314,9 +397,9 @@ namespace OzerJewelry
                 eurosatis = Convert.ToDecimal(eurosatisfirst.Replace(".", ","));
                 euroalis = Convert.ToDecimal(euroalisfirst.Replace(".", ","));
             }
-            
 
-            
+
+
 
 
             labelHasAltinSatis.Text = hasaltinsatis.ToString("C3");
@@ -518,6 +601,9 @@ namespace OzerJewelry
                 labeldolarsatis.ForeColor = Color.White;
                 labeldolaralis.ForeColor = Color.White;
 
+                labelHasAltinAlis.ForeColor = Color.White;
+                labelHasAltinSatis.ForeColor = Color.White;
+
                 //Panel
 
                 panel1.BackColor = Color.FromArgb(100, 100, 100);
@@ -641,6 +727,9 @@ namespace OzerJewelry
                 labeleurosatis.ForeColor = Color.Black;
                 labeldolarsatis.ForeColor = Color.Black;
                 labeldolaralis.ForeColor = Color.Black;
+
+                labelHasAltinAlis.ForeColor = Color.Black;
+                labelHasAltinSatis.ForeColor = Color.Black;
 
                 //Panel
                 panel1.BackColor = Color.LightSlateGray;
@@ -1326,10 +1415,7 @@ namespace OzerJewelry
                 labelHasAltinSatis.Text = moneyFormat;
             }
         }
-        public async Task haremaltingetir()
-        {
 
-        }
 
         public static string cfgFile = "config.json";
         class Settings
@@ -1379,13 +1465,13 @@ namespace OzerJewelry
 
 
             //label27.Text = readcfg.apiKey;
-            Process process = new Process();
-            process.StartInfo.FileName = @"OzerJewelry_DataGetir.exe";
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = false;
-            process.Start();
+            //Process process = new Process();
+            //process.StartInfo.FileName = @"OzerJewelry_DataGetir.exe";
+            //process.StartInfo.CreateNoWindow = true;
+            //process.StartInfo.UseShellExecute = false;
+            //process.Start();
 
-            haremaltingetir();
+            haremaltingetir(hasaltinalis, hasaltinsatis);
 
 
             ayarcek();
@@ -1405,7 +1491,6 @@ namespace OzerJewelry
             DataGetirThread.IsBackground = true;
             DataGetirThread.Start();
             Control.CheckForIllegalCrossThreadCalls = false;
-            haremaltingetir();
             //DataGetir();
             change();
             darkLight();
@@ -2483,14 +2568,6 @@ namespace OzerJewelry
 
         }
 
-        private void editToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
 
-        }
-
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-
-        }
     }
 }

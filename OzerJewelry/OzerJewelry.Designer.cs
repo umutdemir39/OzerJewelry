@@ -145,7 +145,6 @@
             label26 = new Label();
             panel13 = new Panel();
             contextMenuStrip1 = new ContextMenuStrip(components);
-            timer2 = new System.Windows.Forms.Timer(components);
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             panel1.SuspendLayout();
@@ -1504,10 +1503,6 @@
             contextMenuStrip1.Name = "contextMenuStrip1";
             contextMenuStrip1.Size = new Size(61, 4);
             // 
-            // timer2
-            // 
-            timer2.Tick += timer2_Tick;
-            // 
             // OzerJewelry
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -1702,6 +1697,5 @@
         private Label label26;
         private Panel panel13;
         private ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.Timer timer2;
     }
 }
